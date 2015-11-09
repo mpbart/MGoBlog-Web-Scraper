@@ -25,8 +25,6 @@ type ArticleMetadata struct {
 	Date   time.Time
 }
 
-type unsafeAccess func(node *html.Node) ([]string, error)
-
 func formatDate(dateString string) time.Time {
 	parts := strings.Split(dateString, " ")
 	parts[0] = parts[0][:3]
