@@ -2,13 +2,14 @@
 A tool for scraping article content from MGoBlog
 
 ## Usage
-Build from source and then run the executable with one of the following command line flags
-* -scrape=true
-* -date=\<YYYY\-MM\-DD\>
-* -process=true
-* -number=numberToPrint
-
-If scrape is true then all articles after <date> will be scraped from the website and cached locally on disk. If the date argument is not supplied the default date is used which at this moment is 2015-07-01. If process is set to true then all locally cached files will be parsed and word count of the numberToPrint most common words aggregated from all rticles will be printed out.
+Scrape content from MGoBlog
+`$ ./MGoBlog-Web-Scraper -scrape=true`
+Specify the earliest date to scrape articles until (articles are retrieved in reverse chronological order. Default is today - 30 days)
+`$ ./MGoBlog-Web-Scraper -scrape=true -date=2015-09-17`
+Process all articles that have been cached locally and print out the results
+`$ ./MGoBlog-Web-Scraper -process=true`
+Specify the number of results to print after processing articles (Default is 20)
+`$ ./MGoBlog-Web-Scraper -process=true -results=30`
 
 ## TODO
 The plan is to eventually do some sort of language analysis with the data that I've collected (e.g. generate flesch-kincaid or coleman-liau scores)
