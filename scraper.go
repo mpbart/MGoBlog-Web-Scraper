@@ -24,7 +24,8 @@ var nextPage = "?page="
 var page = 0
 
 func init() {
-	flag.StringVar(&parseUntil, "date", "2015-07-01", "Date to parse until in the format of <YYYY-MM-DD>")
+	defaultDate := time.Now().Add(-time.Duration(1000000000 * 60 * 60 * 24 * 30)).Format("2006-01-02")
+	flag.StringVar(&parseUntil, "date", defaultDate, "Date to parse until in the format of <YYYY-MM-DD>")
 	flag.BoolVar(&shouldScrape, "scrape", false, "Flag indicating whether to scrape mgoblog")
 	flag.BoolVar(&shouldProcess, "process", false, "Flag indicating whether to process scraped articles")
 	flag.IntVar(&resultsToPrint, "results", 20, "Number of results to print")
