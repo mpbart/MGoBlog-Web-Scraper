@@ -16,6 +16,7 @@ import (
 var parseUntil string
 var shouldScrape bool
 var shouldProcess bool
+var resultsToPrint int
 var parseUntilDate time.Time
 var directory = "mgoblog.com/"
 var baseLink = "http://www.MGoBlog.com"
@@ -26,24 +27,9 @@ func init() {
 	flag.StringVar(&parseUntil, "date", "2015-07-01", "Date to parse until in the format of <YYYY-MM-DD>")
 	flag.BoolVar(&shouldScrape, "scrape", false, "Flag indicating whether to scrape mgoblog")
 	flag.BoolVar(&shouldProcess, "process", false, "Flag indicating whether to process scraped articles")
+	flag.IntVar(&resultsToPrint, "results", 20, "Number of results to print")
 	flag.Parse()
 	parseUntilDate, _ = time.Parse("2006-01-02", parseUntil)
-}
-
-type RawArticle struct {
-	article Article
-	reader  io.Reader
-}
-
-func (m *RawArticle) Work() WordCounter {
-	m.article, _ = ProcessArticle(m.reader)
-	for _, tag := range m.article.metadata.Tags {
-		if ExcludeTagSet.Contains(tag) {
-			return WordCounter{}
-		}
-	}
-	retval := CountWords(m.article)
-	return retval
 }
 
 func main() {
@@ -90,14 +76,24 @@ func processCachedArticles() {
 		page := retrieveCachedPage("mgoblog.com/" + fileInfo.Name())
 		done.Add(1)
 		go func(page io.Reader) {
-			newthing := RawArticle{reader: page}
-			results := newthing.Work()
+			results := processPage(page)
 			myChan <- results
 			done.Done()
 		}(page)
 	}
 	done.Wait()
-	printTopNResults(50)
+	printTopNResults(resultsToPrint)
+}
+
+func processPage(page io.Reader) WordCounter {
+	article, _ := ProcessArticle(page)
+	for _, tag := range article.metadata.Tags {
+		if ExcludeTagSet.Contains(tag) {
+			return WordCounter{}
+		}
+	}
+	results := CountWords(article)
+	return results
 }
 
 func retrieveCachedPage(title string) io.Reader {
