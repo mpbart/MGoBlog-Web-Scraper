@@ -51,39 +51,38 @@ func parseMetadataForArticles(article io.Reader) (metadata []ArticleMetadata, er
 	return metadata, err
 }
 
-func parseMetadata(root *html.Node) (metadataFromPage ArticleMetadata, err error) {
-	Link, err := getLink(root)
+func parseMetadata(root *html.Node) (pageMetadata ArticleMetadata, err error) {
+	pageMetadata.link, err = getLink(root)
 	if err != nil {
 		fmt.Println(err)
-		return metadataFromPage, err
+		return pageMetadata, err
 	}
-	author, err := getAuthor(root)
+
+	pageMetadata.Author, err = getAuthor(root)
 	if err != nil {
 		fmt.Println(err)
-		return metadataFromPage, err
+		return pageMetadata, err
 	}
-	title, err := getTitle(root)
+
+	pageMetadata.Title, err = getTitle(root)
 	if err != nil {
 		fmt.Println(err)
-		return metadataFromPage, err
+		return pageMetadata, err
 	}
-	date, err := getDate(root)
+
+	pageMetadata.Date, err = getDate(root)
 	if err != nil {
 		fmt.Println(err)
-		return metadataFromPage, err
+		return pageMetadata, err
 	}
-	tags, err := getTags(root)
+
+	pageMetadata.Tags, err = getTags(root)
 	if err != nil {
 		fmt.Println(err)
-		return metadataFromPage, err
+		return pageMetadata, err
 	}
-	//TODO: find better way to do this
-	metadataFromPage.Author = author
-	metadataFromPage.Title = title
-	metadataFromPage.Date = date
-	metadataFromPage.Tags = tags
-	metadataFromPage.link = Link
-	return metadataFromPage, err
+
+	return pageMetadata, err
 }
 
 func ProcessArticle(unparsedArticle io.Reader) (Article, error) {
